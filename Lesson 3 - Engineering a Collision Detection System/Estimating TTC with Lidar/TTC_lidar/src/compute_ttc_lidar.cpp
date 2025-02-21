@@ -19,12 +19,16 @@ void computeTTCLidar(std::vector<LidarPoint> &lidarPointsPrev,
     double minXPrev = 1e9, minXCurr = 1e9;
     for (auto it = lidarPointsPrev.begin(); it != lidarPointsPrev.end(); ++it)
     {
-        minXPrev = minXPrev > it->x ? it->x : minXPrev;
+        bool smaller_value = it->x < minXPrev; // make change when iterator's value x is smaller than the current minx of prev
+        bool within_lane = laneWidth > it->y && it->y > -laneWidth; // only make change if y value is within the lane
+        minXPrev = smaller_value && within_lane ? it->x : minXPrev;
     }
 
     for (auto it = lidarPointsCurr.begin(); it != lidarPointsCurr.end(); ++it)
     {
-        minXCurr = minXCurr > it->x ? it->x : minXCurr;
+        bool smaller_value = it->x < minXCurr; // make change only when iterator's x is less than minx of current
+        bool within_lane = laneWidth > it->y && it->y > -laneWidth; // make change only when own y value is within the lane
+        minXCurr = smaller_value && within_lane ? it->x : minXCurr;
     }
 
     // compute TTC from both measurements

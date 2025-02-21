@@ -28,9 +28,13 @@ void loadImage3()
     string windowName = "First steps in OpenCV";
     cv::namedWindow(windowName, 1); // create window
     for (auto it = imgList.begin(); it != imgList.end(); ++it)
+    // for (const cv::Mat& img : imgList)
     {
 
         // STUDENT TASK : Prevent image 7 from being displayed
+        bool is_image7 = (it - imgList.begin()) == 2;
+        if (is_image7)
+            continue;
 
         // display image
         cv::imshow(windowName, *it);
