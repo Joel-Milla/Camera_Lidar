@@ -37,8 +37,8 @@ void cornernessHarris()
     cv::cvtColor(img, img, cv::COLOR_BGR2GRAY); // convert to grayscale
 
     // Detector parameters
-    int blockSize = 2;     // for every pixel, a blockSize × blockSize neighborhood is considered
-    int apertureSize = 3;  // aperture parameter for Sobel operator (must be odd)
+    int blockSize = 2;     // for every pixel, a blockSize × blockSize neighborhood is considered. This replaces the standar deviation that was explained, so the block size defines the number of neighboors that are considered for detecting the keypoints
+    int apertureSize = 3;  // aperture parameter for Sobel operator (must be odd). Can control the size of the sobel operator. But larger makes it better for noise but also makes it less precise. 
     int minResponse = 100; // minimum value for a corner in the 8bit scaled response matrix
     double k = 0.04;       // Harris parameter (see equation for details)
 
