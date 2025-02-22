@@ -33,7 +33,7 @@ void magnitudeSobel()
     // show result
     string windowName = "Gaussian Blurring";
     cv::namedWindow(windowName, 1); // create window
-    cv::imshow(windowName, magnitude);
+    // cv::imshow(windowName, magnitude);
     cv::waitKey(0); // wait for keyboard input before continuing
 }
 
