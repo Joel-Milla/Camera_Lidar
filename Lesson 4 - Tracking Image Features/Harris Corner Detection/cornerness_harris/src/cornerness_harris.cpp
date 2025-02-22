@@ -7,6 +7,28 @@
 
 using namespace std;
 
+int getMaxValue(const cv::Mat& img, int windows_size, int indx, int jndx) {
+    int local_maximum = img.at<int>(indx, jndx);
+
+    std::vector<pair<int,int>> movements = {{-1,-1},{-1,0},
+                                                {-1,1},{0,1},
+                                                {1,1},{1,0},
+                                                {1,-1},{0,-1}};
+
+    for (int count = 1; count <= windows_size; count++) {
+        for (const pair<int,int>& movement : movements) {
+            int new_indx = indx + movement.first;
+            int new_jndx = jndx + movement.second;
+
+            int compared_value = img.at<int>(new_indx, new_jndx);
+            if (compared_value > local_maximum)
+                local_maximum = compared_value;
+        }
+    }
+    
+    return local_maximum;
+}
+
 void cornernessHarris()
 {
     // load image from file
@@ -34,10 +56,36 @@ void cornernessHarris()
     cv::waitKey(0);
 
     // TODO: Your task is to locate local maxima in the Harris response matrix 
-    // and perform a non-maximum suppression (NMS) in a local neighborhood around 
-    // each maximum. The resulting coordinates shall be stored in a list of keypoints 
-    // of the type `vector<cv::KeyPoint>`.
+    // and perform a non-maximum suppression (NMS) in a local neighborhood around each maximum. The resulting coordinates shall be stored in a list of keypoints of the type `vector<cv::KeyPoint>`.
+    cv::Mat result_image = cv::Mat::zeros(dst_norm_scaled.size(), CV_8U);
+    for (int indx = 0; indx < img.rows; indx++) {
+        for (int jndx = 0; jndx < img.cols; jndx++) {
+            int curr_value = dst_norm_scaled.at<int>(indx, jndx);
+            int max_local = getMaxValue(dst_norm_scaled, 1, indx, jndx);
 
+            if (curr_value == max_local)
+                result_image.at<int>(indx, jndx) = 255;
+        }
+    }
+
+    cv::imshow(windowName, result_image);
+    cv::waitKey(0);
+
+    // save values in c_keypoints
+    std::vector<cv::KeyPoint>  c_keypoints;
+    for ( int indx = 0; indx < dst_norm_scaled.rows; indx++) {
+        for (int jndx = 0; jndx < dst_norm_scaled.cols; jndx++) {
+            int curr_value = result_image.at<int>(indx, jndx);
+            if (curr_value == 0)
+                continue;
+
+            cv::Vec<float, 7> v = dst_norm_scaled.at< cv::Vec<float, 7> >(indx,jndx);
+            cv::KeyPoint kp(v[0], v[1], v[2], v[3], v[4], (int)v[5], (int)v[6]);
+
+            c_keypoints.push_back(kp);
+        }
+
+    };
 }
 
 int main()
