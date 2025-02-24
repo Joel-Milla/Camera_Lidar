@@ -1,9 +1,4 @@
-# Sensor Fusion Camera Course
-Camera is the second course in the Sensor Fusion ND. The purpose of this repo is to provide the exercise code to the students, so that they can practice in local system. 
-
-This repo contains lesson-wise exercises and corresponding solutions for Udacity's Sensor Fusion ND. 
-
-## A. List of Lesson-wise Exercises
+## A. List of Topics Seen
 1. Lesson 2: Autonomous Vehicles and Computer Vision
    - The OpenCV Library
 1. Lesson 3: Engineering a Collision Detection System
