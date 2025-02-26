@@ -19,7 +19,7 @@
 1. Lesson 7: Starter code for "Project: Track an Object in 3D Space" is available here - https://github.com/udacity/SFND_3D_Object_Tracking
 
 
-## B. Dependencies for Running Locally
+## B. Dependencies for Local Setup
 1. cmake >= 2.8
     * All OSes: [click here for installation instructions](https://cmake.org/install/)
 
