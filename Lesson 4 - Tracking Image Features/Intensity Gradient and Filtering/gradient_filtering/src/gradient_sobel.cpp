@@ -1,5 +1,3 @@
-#include <iostream>
-#include <numeric>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
@@ -16,7 +14,7 @@ void gradientSobel()
   
   	// Step 1 - load image from file
     cv::Mat img;
-    img = cv::imread("./img1.png");
+    img = cv::imread("/home/jalej/Documents/Learning/courses/SensorFusion_Camera/Lesson 4 - Tracking Image Features/Intensity Gradient and Filtering/gradient_filtering/images/img1.png");
 
     //  Step 2 - convert image to grayscale
     cv::Mat imgGray;

@@ -14,7 +14,7 @@ void matchDescriptors(cv::Mat &imgSource, cv::Mat &imgRef, vector<cv::KeyPoint> 
 {
 
     // configure matcher
-    bool crossCheck = false; // corsscheck is for computing matches of keys1 to img2 and viceversa. and just match the ones that both have the same match. cannot be activated with KNN because it only works with normal match
+    bool crossCheck = false; // crosscheck is for computing matches of keys1 to img2 and viceversa. and just match the ones that both have the same match. cannot be activated with KNN because it only works with normal match
     cv::Ptr<cv::DescriptorMatcher> matcher; // general matcher. tell if use brute force matcher or flann (kd tree) match
 
     if (matcherType.compare("MAT_BF") == 0)
@@ -92,7 +92,7 @@ void matchDescriptors(cv::Mat &imgSource, cv::Mat &imgRef, vector<cv::KeyPoint> 
 }
 
 /*
-//* RESULTS
+RESULTS
 1) Brute force + Nearest neighboors
 -BF matching cross-check=0 (NN) with n=2896 matches in 14.6868 ms
 -BF matching cross-check=1 (NN) with n=1705 matches in 23.1417 ms

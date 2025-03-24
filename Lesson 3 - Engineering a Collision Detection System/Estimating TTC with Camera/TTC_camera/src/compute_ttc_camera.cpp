@@ -68,8 +68,6 @@ void computeTTCCamera(std::vector<cv::KeyPoint> &kptsPrev, std::vector<cv::KeyPo
 
     double dT = 1 / frameRate;
     TTC = -dT / (1 - medianDistRatio);
-
-    // TODO: STUDENT TASK (replacement for meanDistRatio)
 }
 
 int main()
