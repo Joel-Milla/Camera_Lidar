@@ -1,9 +1,5 @@
-# Sensor Fusion Camera Course
-Camera is the second course in the Sensor Fusion ND. The purpose of this repo is to provide the exercise code to the students, so that they can practice in local system. 
-
-This repo contains lesson-wise exercises and corresponding solutions for Udacity's Sensor Fusion ND. 
-
-## A. List of Lesson-wise Exercises
+# Sensor Fusion - Computer Vision
+## A. List of Topics Seen
 1. Lesson 2: Autonomous Vehicles and Computer Vision
    - The OpenCV Library
 1. Lesson 3: Engineering a Collision Detection System
@@ -15,15 +11,8 @@ This repo contains lesson-wise exercises and corresponding solutions for Udacity
    - Haris Corner Detection
    - Intensity Gradient and Filtering
    - Overview of Popular Keypoint Detectors
-1. Lesson 5: Starter code for "Project: Camera Based 2D Feature Tracking" is available here - https://github.com/udacity/SFND_2D_Feature_Tracking
-1. Lesson 6: Combining Camera and Lidar
-   - Creating 3D-Objects
-   - Lidar-to-Camera Point Projection
-   - Object Detection with YOLO
-1. Lesson 7: Starter code for "Project: Track an Object in 3D Space" is available here - https://github.com/udacity/SFND_3D_Object_Tracking
 
-
-## B. Dependencies for Running Locally
+## B. Dependencies for Local Setup
 1. cmake >= 2.8
     * All OSes: [click here for installation instructions](https://cmake.org/install/)
 
