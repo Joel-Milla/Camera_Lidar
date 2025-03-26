@@ -11,10 +11,13 @@
    - Haris Corner Detection
    - Intensity Gradient and Filtering
    - Overview of Popular Keypoint Detectors
+<img src="images/keypoints.png" width="700" height="400" />
+<img src="images/keypoints_matching.png" width="700" height="400" />
+
 4. Lesson 6: Combining Camera and Lidar
    - Lidar-to-Camera Point Projection
 
-<img src="lidar_camera.png" width="700" height="400" />
+<img src="images/lidar_camera.png" width="700" height="400" />
 
 ## B. Dependencies for Local Setup
 1. cmake >= 3.22
