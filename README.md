@@ -12,7 +12,7 @@
    - Intensity Gradient and Filtering
    - Overview of Popular Keypoint Detectors
 <img src="images/keypoints.png" width="700" height="400" />
-<img src="images/keypoints_matching.png" width="700" height="400" />
+<img src="images/keypoint_matching.png" width="700" height="400" />
 
 4. Lesson 6: Combining Camera and Lidar
    - Lidar-to-Camera Point Projection
