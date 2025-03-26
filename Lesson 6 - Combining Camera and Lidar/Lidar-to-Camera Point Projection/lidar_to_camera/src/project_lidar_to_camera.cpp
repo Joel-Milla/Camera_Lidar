@@ -1,5 +1,3 @@
-#include <iostream>
-#include <numeric>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
@@ -8,8 +6,8 @@
 
 using namespace std;
 
-void loadCalibrationData(cv::Mat &P_rect_00, cv::Mat &R_rect_00, cv::Mat &RT)
-{
+// Set calibration values exactly as the ones uploaded by people from KITTI dataset
+void loadCalibrationData(cv::Mat &P_rect_00, cv::Mat &R_rect_00, cv::Mat &RT) {
     RT.at<double>(0,0) = 7.533745e-03; RT.at<double>(0,1) = -9.999714e-01; RT.at<double>(0,2) = -6.166020e-04; RT.at<double>(0,3) = -4.069766e-03;
     RT.at<double>(1,0) = 1.480249e-02; RT.at<double>(1,1) = 7.280733e-04; RT.at<double>(1,2) = -9.998902e-01; RT.at<double>(1,3) = -7.631618e-02;
     RT.at<double>(2,0) = 9.998621e-01; RT.at<double>(2,1) = 7.523790e-03; RT.at<double>(2,2) = 1.480755e-02; RT.at<double>(2,3) = -2.717806e-01;
@@ -41,23 +39,35 @@ void projectLidarToCamera2()
     cv::Mat RT(4,4,cv::DataType<double>::type); // rotation matrix and translation vector
     loadCalibrationData(P_rect_00, R_rect_00, RT);
     
-    // TODO: project lidar points
-    cv::Mat visImg = img.clone();
-    cv::Mat overlay = visImg.clone();
+    cv::Mat visImg = img.clone(); 
+    cv::Mat overlay = visImg.clone(); // making trasnaprent so we can overaly the points
 
     cv::Mat X(4,1,cv::DataType<double>::type);
     cv::Mat Y(3,1,cv::DataType<double>::type);
 
-    // TODO
+    //* Run over all lidar points, and map them to xy coordinate
     for(auto it=lidarPoints.begin(); it!=lidarPoints.end(); ++it) {
         // 1. Convert current Lidar point into homogeneous coordinates and store it in the 4D variable X.
+        X.at<double>(0, 0) = it->x;
+        X.at<double>(1, 0) = it->y;
+        X.at<double>(2, 0) = it->z;
+        X.at<double>(3, 0) = 1;
 
-        // 2. Then, apply the projection equation as detailed in lesson 5.1 to map X onto the image plane of the camera. 
+        // 2. Then, apply the projection equation using the extrinsic and intrinsic formulas to map X onto the image plane of the camera. 
         // Store the result in Y.
+        // X point in 3D space (but homogeneous coordinates to make easy calculations), RT (excentric calibration, rotation + calibration), R_rect (rectify cameras so two cameras match but we are not using this because dont have stereo), P_rect (intrinsic calibration, which is lens distortion, principal point, focla length)
+        Y = P_rect_00 * R_rect_00 * RT * X; // easy to concatanate because in homogeneous coordinates. Get Y(3,1)
 
-        // 3. Once this is done, transform Y back into Euclidean coordinates and store the result in the variable pt.
-        cv::Point pt;
+        // 3. Once this is done, transform Y back into Euclidean coordinates and store the result in the variable pt, to get into pixel coordinates.
+        Y /= Y.at<double>(2,0);
+        cv::Point pt(Y.at<double>(0,0), Y.at<double>(1,0));
 
+        //* Filter points that are within distance only
+        float maxX = 25.0, maxY = 6.0, minZ = -1.4; 
+        if(it->x > maxX || it->x < 0.0 || abs(it->y) > maxY || it->z < minZ || it->r<0.01 )
+            continue; // skip to next point when not within boundaries
+        
+        //* Color the current point to red if close, green if far. Circle detailing the lidar
         float val = it->x;
         float maxVal = 20.0;
         int red = min(255, (int)(255 * abs((val - maxVal) / maxVal)));
@@ -65,7 +75,7 @@ void projectLidarToCamera2()
         cv::circle(overlay, pt, 5, cv::Scalar(0, green, red), -1);
     }
 
-    float opacity = 0.6;
+    float opacity = 0.6; // opacity of image to show
     cv::addWeighted(overlay, opacity, visImg, 1 - opacity, 0, visImg);
     
     string windowName = "LiDAR data on image overlay";
