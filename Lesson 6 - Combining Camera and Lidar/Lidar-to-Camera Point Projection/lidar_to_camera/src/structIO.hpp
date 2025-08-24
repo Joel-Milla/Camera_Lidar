@@ -1,7 +1,6 @@
 #ifndef structIO_hpp
 #define structIO_hpp
 
-#include <stdio.h>
 #include "dataStructures.h"
 
 void writeLidarPts(std::vector<LidarPoint> &input, const char* fileName);
