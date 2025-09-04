@@ -1,18 +1,15 @@
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 
-add_definitions(-std=c++11)
-
-set(CXX_FLAGS "-Wall" "-pedantic")
-set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(camera_fusion)
 
-find_package(OpenCV 4.1 REQUIRED)
+find_package(OpenCV REQUIRED)
 
-include_directories(${OpenCV_INCLUDE_DIRS})
-link_directories(${OpenCV_LIBRARY_DIRS})
-add_definitions(${OpenCV_DEFINITIONS})
 
-# Executables for exercises
+# Executables
 add_executable (cluster_with_roi src/cluster_with_roi.cpp src/structIO.cpp)
-target_link_libraries (cluster_with_roi ${OpenCV_LIBRARIES})
+target_link_libraries (cluster_with_roi ${OpenCV_LIBS})
