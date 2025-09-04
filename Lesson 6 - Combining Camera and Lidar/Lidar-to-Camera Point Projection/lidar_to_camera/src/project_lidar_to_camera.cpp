@@ -62,7 +62,7 @@ void projectLidarToCamera2()
         Y /= Y.at<double>(2,0);
         cv::Point pt(Y.at<double>(0,0), Y.at<double>(1,0));
 
-        //* Filter points that are within distance only
+        //* Filter points that are within distance only. and that have a good reflectivity, as less reflectivity then not sure if good measurements
         float maxX = 25.0, maxY = 6.0, minZ = -1.4; 
         if(it->x > maxX || it->x < 0.0 || abs(it->y) > maxY || it->z < minZ || it->r<0.01 )
             continue; // skip to next point when not within boundaries
