@@ -1,8 +1,10 @@
 #include <iostream>
 #include <numeric>
 #include <opencv2/core.hpp>
+#include <opencv2/core/types.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include <vector>
 
 #include "dataStructures.h"
 #include "structIO.hpp"
@@ -169,6 +171,49 @@ void clusterLidarWithROI(std::vector<BoundingBox> &boundingBoxes,
     }
 
   } // eof loop over all Lidar points
+}
+
+void show3DObjects(std::vector<BoundingBox> &boundingBoxes, cv::Size worldSize,
+                   cv::Size imageSize, bool bWait) {
+  //* Create the top view image
+  cv::Mat topViewImage(imageSize, CV_8UC3, cv::Scalar(255, 255, 255));
+
+  for (auto it1 = boundingBoxes.begin(); it1 != boundingBoxes.end(); it1++) {
+    //* Create randomized color for current 3D object
+    cv::RNG rng(it1->boxID);
+    cv::Scalar currColor = cv::Scalar(rng.uniform(0, 150), rng.uniform(0, 150),
+                                      rng.uniform(0, 150));
+
+    //* Plot lidar points
+    int top = 1e8, left = 1e8, bottom = 0.0, right = 0.0;
+    float xwmin = 1e8, ywmin = 1e8, ywmax = -1e8; //* Very big values, then one very small
+
+    for (auto it2 = it1->lidarPoints.begin(); it2 != it1->lidarPoints.end();
+         it2++) {
+          float xw = (*it2).x;
+          float yw = (*it2).y;
+
+          xwmin = xwmin < xw ? xwmin : xw;
+          ywmin = ywmin < yw ? ywmin : yw;
+          ywmax = ywmax < yw ? yw : ywmax;
+
+          //* top view image
+          int y = (-xw * imageSize.height / worldSize.height) + imageSize.height;
+          int x = (-yw * imageSize.width / worldSize.width) + imageSize.width / 2.0;
+
+          //* Find enclosing rectangle
+          top = top < y ? top : y;
+          bottom = bottom > y ? bottom : y;
+          left = left < x ? left : x;
+          right = right > x ? right : x;
+
+          //* Draw circle
+          cv::circle(topViewImage, cv::Point(x, y), 4, currColor, -1);
+    }
+
+    //* Draw rectangle surrounding bounding box
+    cv::rectangle(topViewImage, cv::Point(left, top), cv::Point(right, bottom), cv::Scalar(0,0,0), 2);
+  }
 }
 
 int main() {
