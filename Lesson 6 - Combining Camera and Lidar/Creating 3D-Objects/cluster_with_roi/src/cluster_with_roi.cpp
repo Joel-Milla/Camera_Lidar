@@ -1,3 +1,4 @@
+#include <cstdio>
 #include <iostream>
 #include <numeric>
 #include <opencv2/core.hpp>
@@ -186,34 +187,67 @@ void show3DObjects(std::vector<BoundingBox> &boundingBoxes, cv::Size worldSize,
 
     //* Plot lidar points
     int top = 1e8, left = 1e8, bottom = 0.0, right = 0.0;
-    float xwmin = 1e8, ywmin = 1e8, ywmax = -1e8; //* Very big values, then one very small
+    float xwmin = 1e8, ywmin = 1e8,
+          ywmax = -1e8; //* Very big values, then one very small
 
     for (auto it2 = it1->lidarPoints.begin(); it2 != it1->lidarPoints.end();
          it2++) {
-          float xw = (*it2).x;
-          float yw = (*it2).y;
+      float xw = (*it2).x;
+      float yw = (*it2).y;
 
-          xwmin = xwmin < xw ? xwmin : xw;
-          ywmin = ywmin < yw ? ywmin : yw;
-          ywmax = ywmax < yw ? yw : ywmax;
+      xwmin = xwmin < xw ? xwmin : xw;
+      ywmin = ywmin < yw ? ywmin : yw;
+      ywmax = ywmax < yw ? yw : ywmax;
 
-          //* top view image
-          int y = (-xw * imageSize.height / worldSize.height) + imageSize.height;
-          int x = (-yw * imageSize.width / worldSize.width) + imageSize.width / 2.0;
+      //* top view image
+      int y = (-xw * imageSize.height / worldSize.height) + imageSize.height;
+      int x = (-yw * imageSize.width / worldSize.width) + imageSize.width / 2.0;
 
-          //* Find enclosing rectangle
-          top = top < y ? top : y;
-          bottom = bottom > y ? bottom : y;
-          left = left < x ? left : x;
-          right = right > x ? right : x;
+      //* Find enclosing rectangle
+      top = top < y ? top : y;
+      bottom = bottom > y ? bottom : y;
+      left = left < x ? left : x;
+      right = right > x ? right : x;
 
-          //* Draw circle
-          cv::circle(topViewImage, cv::Point(x, y), 4, currColor, -1);
+      //* Draw circle
+      cv::circle(topViewImage, cv::Point(x, y), 4, currColor, -1);
     }
 
     //* Draw rectangle surrounding bounding box
-    cv::rectangle(topViewImage, cv::Point(left, top), cv::Point(right, bottom), cv::Scalar(0,0,0), 2);
+    cv::rectangle(topViewImage, cv::Point(left, top), cv::Point(right, bottom),
+                  cv::Scalar(0, 0, 0), 2);
+
+    //* Augment data object with some key values
+    char str1[200], str2[200];
+    sprintf(str1, "id=%d, #pts=%d", it1->boxID, (int)it1->lidarPoints.size());
+    cv::putText(topViewImage, str1, cv::Point2f(left - 250, bottom + 50),
+                cv::FONT_ITALIC, 2, currColor);
+
+    sprintf(str2, "xmin=%2.2f m, yw=%2.2f m", xwmin, ywmax - ywmin);
+    cv::putText(topViewImage, str2, cv::Point2f(left - 250, bottom + 125),
+                cv::FONT_ITALIC, 2, currColor);
   }
+
+  //* Plot distance markers
+  float lineSpacing = 2.0; // gap between distance markers
+  int nMarkers = floor(worldSize.height / lineSpacing);
+  for (size_t i = 0; i < nMarkers; ++i) {
+    int y = (-(i * lineSpacing) * imageSize.height / worldSize.height) +
+            imageSize.height;
+    cv::line(topViewImage, cv::Point(0, y), cv::Point(imageSize.width, y),
+             cv::Scalar(255, 0, 0));
+  }
+
+  //* Display image
+  string windowName = "3D Objects";
+  cv::namedWindow(windowName, cv::WINDOW_NORMAL);
+
+  cv::resizeWindow(windowName, 250, 500);
+  cv::namedWindow(windowName, 1);
+  cv::imshow(windowName, topViewImage);
+
+  if (bWait)
+    cv::waitKey();
 }
 
 int main() {
@@ -224,12 +258,16 @@ int main() {
   readBoundingBoxes("../dat/C53A3_currBoundingBoxes.dat", boundingBoxes);
 
   clusterLidarWithROI(boundingBoxes, lidarPoints);
-  for (auto it = boundingBoxes.begin(); it != boundingBoxes.end(); ++it) {
-    if (it->lidarPoints.size() > 0) {
-      showLidarTopview(it->lidarPoints, cv::Size(10.0, 25.0),
-                       cv::Size(1000, 2000));
-    }
-  }
+  show3DObjects(boundingBoxes, cv::Size(10, 25),
+                       cv::Size(1000, 2000), true);
+
+  // for (auto it = boundingBoxes.begin(); it != boundingBoxes.end(); ++it) {
+  //   if (it->lidarPoints.size() > 0) {
+  //     showLidarTopview(it->lidarPoints, cv::Size(10.0, 25.0),
+  //                      cv::Size(1000, 2000));
+                       
+  //   }
+  // }
 
   return 0;
 }
